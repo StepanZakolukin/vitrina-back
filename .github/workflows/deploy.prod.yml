@@ -30,8 +30,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
           port: 22
           script: |
-            cd ~/
-
             # Создание .env.prod с подстановкой параметров
             cat <<EOF > .env.prod
             ENV_NAME=prod

@@ -39,9 +39,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGE }}
           port: 22
           script: |
-            cd ~/
-            scp docker-compose.yml ${{ secrets.USER_STAGE }}@${{ vars.SERVER_IP_STAGE }}:docker-compose.yml
-
             # Создание .env.stage с подстановкой параметров
             cat <<EOF > .env.stage
             ENV_NAME=stage
