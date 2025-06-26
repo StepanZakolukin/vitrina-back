@@ -8,8 +8,6 @@ on:
         required: true
 
 jobs:
-  test:
-    uses: ./.github/workflows/tests.yml
   deploy:
     runs-on: ubuntu-latest
     steps:

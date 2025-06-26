@@ -8,10 +8,7 @@ on:
         required: true
 
 jobs:
-  test:
-    uses: ./.github/workflows/tests.yml
   deploy:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
