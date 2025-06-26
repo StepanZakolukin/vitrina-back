@@ -17,6 +17,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Copy docker-compose.yml to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ vars.SERVER_IP_STAGE }}
+          username: ${{ secrets.USER_STAGE }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_STAGE }}
+          source: "docker-compose.yml"
+          target: "."
+
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.5.4
         with:
@@ -34,6 +43,7 @@ jobs:
           port: 22
           script: |
             cd ~/
+            scp docker-compose.yml ${{ secrets.USER_STAGE }}@${{ vars.SERVER_IP_STAGE }}:docker-compose.yml
 
             # Создание .env.stage с подстановкой параметров
             cat <<EOF > .env.stage
