@@ -20,7 +20,10 @@ jobs:
           host: ${{ vars.SERVER_IP_STAGE }}
           username: ${{ secrets.USER_STAGE }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGE }}
-          source: "docker-compose.yaml"
+          source: |
+            docker-compose.yaml
+            backup_bd.sh
+
           target: "."
 
       - name: Setup SSH key
@@ -39,9 +42,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGE }}
           port: 22
           script: |
-            # Создание .env.stage с подстановкой параметров
-            cat <<EOF > .env.stage
             ENV_NAME=stage
+
+            # Создаем папки для монтирования томов, если их нет
+            mkdir -p ${ ENV_NAME }/wwwroot
+            mkdir -p ${ ENV_NAME }/pgdata
+            mkdir -p ${ ENV_NAME }/backup
+
+            cat <<EOF > .env.$ENV_NAME
+            ENV_NAME=${ ENV_NAME }
             VERSION=${{ github.event.inputs.version }}
             CR_ID=${{ vars.CR_ID }}
             APP_PORT=5002
@@ -60,15 +69,15 @@ jobs:
             EOF
 
             # Обновление сервиса
-            docker compose --env-file .env.stage down || true
-            docker compose --env-file .env.stage pull
-            docker compose --env-file .env.stage up -d
+            docker compose --env-file .env.${ ENV_NAME } down || true
+            docker compose --env-file .env.${ ENV_NAME } pull
+            docker compose --env-file .env.${ ENV_NAME } up -d
 
             # Проверяем, что контейнер работает
-            # if ! docker inspect -f '{{.State.Running}}' vitrina-back-stage | grep true; then
-            #   echo "Container is not running"
-            #   exit 1
-            # fi
+            if ! docker inspect -f '{{.State.Running}}' vitrina-back-${ ENV_NAME } | grep true; then
+              echo "Container is not running"
+              exit 1
+            fi
 
             # Очистка неиспользуемых образов
             # docker image prune -af

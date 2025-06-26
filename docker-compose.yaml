@@ -32,8 +32,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - ~/pgdata-${ENV_NAME}:/var/lib/postgresql/data
-      - ~/backup_db/dumps/${ENV_NAME}:/backups
+      - ${ENV_NAME}/pgdata:/var/lib/postgresql/data
+      - ${ENV_NAME}/backup:/backup
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
