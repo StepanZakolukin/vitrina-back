@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGE }}
           port: 22
           script: |
-            cd /home/ubuntu/vitrina-back
+            cd ~/
 
             # Создание .env.stage с подстановкой параметров
             cat <<EOF > .env.stage
@@ -56,8 +56,15 @@ jobs:
             EOF
 
             # Обновление сервиса
-            docker compose --env-file .env.prod pull app
-            docker compose --env-file .env.prod up -d app
+            docker compose --env-file .env.stage down || true
+            docker compose --env-file .env.stage pull
+            docker compose --env-file .env.stage up -d
+
+            # Проверяем, что контейнер работает
+            if ! docker inspect -f '{{.State.Running}}' vitrina-back-prod | grep true; then
+              echo "Container is not running"
+              exit 1
+            fi
 
             # Очистка неиспользуемых образов
             docker image prune -af

@@ -18,6 +18,11 @@ services:
       - ~/${ENV_NAME}/wwwroot:/app/wwwroot
     ports:
       - "${APP_PORT}:5000"
+    depends_on:
+      - db
+    resources:
+      limits:
+        cpus: "0.85"
 
   db:
     image: postgres:16
@@ -34,6 +39,10 @@ services:
       - ~/backup_db/dumps/${ENV_NAME}:/backups
     ports:
       - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
 
 volumes:
   pgdata-${ENV_NAME}:
