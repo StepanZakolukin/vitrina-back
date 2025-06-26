@@ -20,9 +20,6 @@ services:
       - "${APP_PORT}:5000"
     depends_on:
       - db
-    resources:
-      limits:
-        cpus: "0.85"
 
   db:
     image: postgres:16
