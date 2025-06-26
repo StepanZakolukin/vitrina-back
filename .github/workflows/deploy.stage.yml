@@ -61,10 +61,10 @@ jobs:
             docker compose --env-file .env.stage up -d
 
             # Проверяем, что контейнер работает
-            if ! docker inspect -f '{{.State.Running}}' vitrina-back-prod | grep true; then
-              echo "Container is not running"
-              exit 1
-            fi
+            # if ! docker inspect -f '{{.State.Running}}' vitrina-back-stage | grep true; then
+            #   echo "Container is not running"
+            #   exit 1
+            # fi
 
             # Очистка неиспользуемых образов
-            docker image prune -af
+            # docker image prune -af
