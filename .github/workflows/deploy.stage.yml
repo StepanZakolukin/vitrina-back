@@ -14,15 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Copy docker-compose.yaml to server
+      - name: Copy docker-compose.yaml and backup_bd.sh to server
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ vars.SERVER_IP_STAGE }}
           username: ${{ secrets.USER_STAGE }}
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGE }}
           source: |
-            docker-compose.yaml
-            backup_bd.sh
+            ../docker-compose.yaml
+            ../backup_bd.sh
 
           target: "."
 
